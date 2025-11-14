@@ -1,0 +1,38 @@
+import ExpressError from '../middleware/ExpressError.js';
+import Project from '../models/projectSchema.js';
+import { projectsSchemaValidate } from '../schemavalidation/projectsSchemaValidate.js';
+
+export const getProjects = async (req, res, next) => {
+  const projects = await Project.find({});
+  if (!projects || projects.length === 0) return next(new ExpressError(400, "No projects to display"))
+  res.json(projects);
+};
+
+export const addProject = async (req, res, next) => {
+  const { error, value } = projectsSchemaValidate.validate(req.body, { abortEarly: false })
+  if (error) return next(new ExpressError(400, error.details[0].message))
+  const project = await Project.create({ ...value });
+  res.status(201).json(project);
+};
+export const singleProject = async (req, res, next) => {
+  const id = req.params.id;
+  // console.log("1. id: ", id)
+  const project = await Project.findOne({ _id: id });
+  if (!project) return next(new ExpressError(400, error.details[0].message))
+  // console.log("2. project: ", project)
+  res.status(201).json(project);
+};
+export const editProject = async (req, res, next) => {
+  const id = req.params.id;
+  console.log("3. id: ", id)
+  const { error, value } = projectsSchemaValidate.validate(req.body, { abortEarly: false, allowUnknown: true, stripUnknown: true })
+  if (error) return next(new ExpressError(400, error.details[0].message))
+  const project = await Project.findByIdAndUpdate(id, { ...value });
+  console.log("4. project: ", project)
+  res.status(201).json(project);
+};
+export const deleteProject = async (req, res, next) => {
+  const project = await Project.findByIdAndDelete(req.params.id);
+  if (!project) return next(new ExpressError(404, "Project not found"));
+  res.json({ message: 'Project deleted' });
+};
