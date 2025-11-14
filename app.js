@@ -12,12 +12,29 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const FRONT_URL = process.env.FRONT_URL || 'http://localhost:5173';
-app.use(cors({ origin: FRONT_URL, credentials: true }));
+const allowedOrigins = [
+    "http://localhost:5173", process.env.FRONT_URL,
+    "https://kanhaguptaportfolio.com",  // non-www also allowed
+    "https://kanhaguptaportfolio-frontend.vercel.app",
+];
+// const FRONT_URL = process.env.FRONT_URL || 'http://localhost:5173';
+// app.use(cors({ origin: FRONT_URL, credentials: true }));
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS: " + origin));
+            }
+        },
+        credentials: true,
+    })
+);
 app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  next();
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    next();
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: "true" }))
