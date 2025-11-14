@@ -1,6 +1,6 @@
 import ExpressError from '../middleware/ExpressError.js';
 import Project from '../models/projectSchema.js';
-import { projectsSchemaValidate } from '../schemavalidation/projectsSchemaValidate.js';
+import { projectsSchemaValidate } from '../schemaValidation/projectsSchemaValidate.js';
 
 export const getProjects = async (req, res, next) => {
   const projects = await Project.find({});
