@@ -21,10 +21,10 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: "true" }))
-app.use('/api/auth', authRoutes);
-app.use('/api/projects', projectRoutes);
-app.use('/api/blogs', blogRoutes);
-app.use('/api/contacts', contactRoutes);
+app.use('/auth', authRoutes);
+app.use('/projects', projectRoutes);
+app.use('/blogs', blogRoutes);
+app.use('/contacts', contactRoutes);
 app.use((error, req, res, next) => {
     next(new ExpressError(404, "Page not found"))
 })
