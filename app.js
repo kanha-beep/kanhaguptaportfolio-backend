@@ -12,17 +12,19 @@ dotenv.config();
 connectDB();
 
 const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ?.split(',')
+    .map(o => o.trim())
+    || ['http://localhost:5173'];
 // const FRONT_URL = process.env.FRONT_URL || 'http://localhost:5173';
 // app.use(cors({ origin: FRONT_URL, credentials: true }));
 app.use(
     cors({
         origin: function (origin, callback) {
             if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS: " + origin));
+                return callback(null, true);
             }
+            return callback(new Error("Not allowed by CORS: " + origin));
         },
         credentials: true,
     })
