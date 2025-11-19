@@ -40,11 +40,11 @@ app.use('/auth', authRoutes);
 app.use('/projects', projectRoutes);
 app.use('/blogs', blogRoutes);
 app.use('/contacts', contactRoutes);
-app.use((error, req, res, next) => {
+app.use((req, res, next) => {
     next(new ExpressError(404, "Page not found"))
 })
 app.use((error, req, res, next) => {
-    const { status, message } = error;
+    const { status=400, message="wrong" } = error;
     res.status(status).json({ message });
 })
 export default app;
