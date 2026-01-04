@@ -40,6 +40,10 @@ export const currentUser = async (req, res, next) => {
     });
 }
 export const logout = async (req, res, next) => {
-    res.clearCookie('cookie')
+    res.clearCookie('cookie', {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+    })
     res.status(200).json({ message: "Logged out successfully" });
 }
