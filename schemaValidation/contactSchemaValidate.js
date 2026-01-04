@@ -15,4 +15,8 @@ export const contactSchemaValidate = Joi.object({
         "string.min": "Message must be at least 6 characters",
         "any.required": "Message is required"
     }),
+    projectName: Joi.string().messages({
+        "string.empty": "Project Name is required",
+        "any.required": "Project Name is required"
+    })
 }).options({ stripUnknown: true });

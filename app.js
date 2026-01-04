@@ -1,50 +1,35 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import projectRoutes from './routes/projectRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import { connectDB } from './init/db.js';
 import ExpressError from './middleware/ExpressError.js';
-
-dotenv.config();
+import cookieParser from 'cookie-parser';
 connectDB();
-
 const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ?.split(',')
-    .map(o => o.trim())
-    || ['http://localhost:5173'];
-// const FRONT_URL = process.env.FRONT_URL || 'http://localhost:5173';
-// app.use(cors({ origin: FRONT_URL, credentials: true }));
-app.use(
-    cors({
-        origin: function (origin, callback) {
-            if (!origin || allowedOrigins.includes(origin)) {
-                return callback(null, true);
-            }
-            return callback(new Error("Not allowed by CORS: " + origin));
-        },
-        credentials: true,
-    })
+const allowedOrigins = process.env.CLIENT_URL?.split(',')
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+})
 );
-app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    next();
-});
+app.set("trust proxy", 1);
+app.use(cookieParser())
 app.use(express.json());
-app.use(express.urlencoded({ extended: "true" }))
-app.use('/auth', authRoutes);
-app.use('/projects', projectRoutes);
-app.use('/blogs', blogRoutes);
-app.use('/contacts', contactRoutes);
+app.use(express.urlencoded({ extended: true }))
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/contacts', contactRoutes);
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page not found"))
 })
 app.use((error, req, res, next) => {
-    const { status=400, message="wrong" } = error;
+    const { status = 400, message = "wrong" } = error;
     res.status(status).json({ message });
 })
 export default app;

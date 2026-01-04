@@ -1,10 +1,10 @@
 import express from 'express';
-import { register, login } from '../controllers/authController.js';
+import { login, currentUser, logout } from '../controllers/authController.js';
 import WrapAsync from '../middleware/WrapAsync.js';
+import { verifyAuth } from '../middleware/verifyAuth.js';
 
 const router = express.Router();
-
-router.post('/register',WrapAsync( register));
 router.post('/login', WrapAsync(login));
-
+router.get("/me", verifyAuth, WrapAsync(currentUser))
+router.post("/logout", verifyAuth, WrapAsync(logout));
 export default router;

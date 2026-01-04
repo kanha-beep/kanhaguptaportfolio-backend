@@ -9,9 +9,10 @@ export const getProjects = async (req, res, next) => {
 };
 
 export const addProject = async (req, res, next) => {
-  const { error, value } = projectsSchemaValidate.validate(req.body, { abortEarly: false })
-  if (error) return next(new ExpressError(400, error.details[0].message))
-  const project = await Project.create({ ...value });
+  const { title, description, url_1, url_2 } = req.body;
+  // const { error, value } = projectsSchemaValidate.validate(req.body, { abortEarly: false })
+  // if (error) return next(new ExpressError(400, error.details[0].message))
+  const project = await Project.create({ title, description, url_1, url_2 });
   res.status(201).json(project);
 };
 export const singleProject = async (req, res, next) => {

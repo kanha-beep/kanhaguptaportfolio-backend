@@ -4,7 +4,7 @@ const projectSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   url_1: { type: String, required: true },
-  url_2: { type: String, required: true }
+  url_2: { type: String }
 }, { timestamps: true });
 
 export default mongoose.model('Project', projectSchema);

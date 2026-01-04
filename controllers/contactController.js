@@ -4,12 +4,14 @@ import { contactSchemaValidate } from "../schemaValidation/contactSchemaValidate
 // Register new user
 export const contact = async (req, res, next) => {
     console.log("starts")
+    const {projectName}  =req.body
+    console.log("projectName: ", req.body)
     const { error, value } = contactSchemaValidate.validate(req.body, { abortEarly: false, stripUnknown: true })
     console.log("error: ", error)
     if (error) return next(new ExpressError(401, error.details[0].message))
     const { name, email, message } = value;
     console.log("contact start to crarte", value)
-    const contact = await Contact.create({ name, email, message });
+    const contact = await Contact.create({ name, email, message, projectName});
     console.log("cntact created: ", contact)
     res.status(201).json({
         _id: contact._id,
